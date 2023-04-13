@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Kalender</title>
+	<style>
+		#kalenderTab {
+			width: 100%;
+			border: 3px solid #000;
+			table-layout: fixed;
+			border-collapse: collapse;
+		}
+		#kalenderTab td {
+			border: 1px solid #000;
+		}
+	</style>
+</head>
+<body>
+	<div id="kalender"></div>
+	</table>
+
+<script>
+addEventListener("load", function(){
+/* 	Erzeugen des Tables  und seiner Elemente, 
+		sowie der benötigten Arrays (Monate, Wochentage, Farben) */
+	let table, tr, text;
+	let monatsname = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
+	let wochentag = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+	let titleWochentag = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
+	let bgColor = [
+        '#99CCFF','#CCFFFF','#33CCCC','#CCFFCC','#99CC00','#FFFFCC',
+        '#FFCC00','#FF9900','#FF6600','#DF8585','#CC99FF','#CCCCFF'
+    ];
+
+	// Erzeugen eines Datums
+	let date = new Date();
+	let year = date.getFullYear();
+	table = document.createElement("table");
+
+	// Zuweisen einer ID, welche mit CSS selektiert wird
+	table.setAttribute("id","kalenderTab");
+
+	// Einfügen der Tabelle in den Div-Container "kalender"
+	document.getElementById("kalender").appendChild(table);
+
+	// Erzeugen der Zeilen der Tabelle
+	for (let j = 0; j < 32; j++) {
+		tr = document.createElement("tr");
+		table.appendChild(tr);
+
+		// Erzeugen der Spalten der Tabelle
+		for (let i = 0; i < 12; i++) {
+			let td = document.createElement("td");
+
+			// Prüfen ob der Schleifendurchlauf sich in der ersten Zeile befindet
+			if (j == 0){
+				// Hinzufügen eines style-Attributes zum setzen der Hintergrundfarbe
+				td.setAttribute("style", "background-color: "+bgColor[i])
+				// Setzen des Monatsnamen in die erste Spalte
+				text = document.createTextNode(monatsname[i])
+			}
+			else{
+				// Zuweisen eines neuen Datums für den Tag mit der Schleifen-Variable
+				date = new Date(year, i, j);
+				if (date.getDate() == j){
+					text = document.createTextNode(j + " "+wochentag[date.getDay()]);
+				}
+				else {
+					text = document.createTextNode("");
+				}
+			}
+			// Prüfen ob der Wochentag ein Samstag oder Sonntag ist
+			if(date.getDay() == 0 || date.getDay() == 6)
+			{
+				// Setzen einer Farbe aus dem "bgColor"-Array
+				td.setAttribute("style", "background-color: "+bgColor[i])
+			}
+			// Hinzufügen der Elemente
+			td.appendChild(text);
+			td.setAttribute("title", titleWochentag[date.getDay()]);
+			tr.appendChild(td);
+		}
+	}
+})
+		</script>
+	</body>
+</html>
