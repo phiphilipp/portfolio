@@ -5,6 +5,7 @@
 
 ![javascript_FILL0_wght400_GRAD0_opsz48](https://user-images.githubusercontent.com/130679795/231813314-48779b88-ab2f-42fe-8e5f-9182288de667.png)<br>
 
+• Self Generating Calender: Ein Kalender, der sich automatisch mit Hilfe von JavaScript selber generiert. Zusätzlich werden Monatsnamen sowie Samstage und Sonntage farblich hinterlegt.
 
 Der einzelne Code ist ausführlicher kommentiert, um die Lesbarkeit zu erhöhen.
 
