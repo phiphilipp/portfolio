@@ -21,7 +21,8 @@
 <?php 
 /*  Der Table "login" in der "userdata" SQL-Datenbank hat ein 
     Auto Increment auf einer ID (login_id),
-    sodass jeder neue Benutzer automatisch eine eigene ID erhält. */
+    sodass jeder neue Benutzer automatisch eine eigene ID erhält.
+    Der Benutzername in der Datenbank ist unique. */
 
 mysqli_report(MYSQLI_REPORT_OFF);
 
@@ -53,7 +54,18 @@ if(isset($_POST["btn_register"])){
     // Senden des Querys an die Datenbank mit dem verschlüsselten Passwort und SQL Injection-Schutz
     $query = "INSERT INTO login (benutzer,passwort) VALUES ('$user', '$password1')";
     mysqli_query($connection, $query);
-    echo "Das Benutzerkonto wurde erfolgreich angelegt.";
+    // Ausgabe des Errors, wenn einer vorhanden, zu Testzwecken
+    if (mysqli_errno($connection) == 1062){
+      echo "Der Benutzername ist bereits vergeben";
+    }
+    else{
+      echo "Das Benutzerkonto wurde erfolgreich angelegt.";
+    }
+    echo mysqli_error($connection);
+  }
+  // Fehlerausgabe zu Testzwecken, wenn die eingegebenen Passwörter nicht übereinstimmen
+  elseif ($password1 != $password2){
+    echo "Die Passwörter stimmen nicht überein";
   }
   else{
     echo "Bitte überprüfen Sie Ihre Eingabe.";
