@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memorizing Game</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dongle:wght@700&display=swap" rel="stylesheet">
+</head>
+<style>
+	html, body {
+    margin: 0;
+    height: 100%;
+		position: relative;
+	}
+
+	.playground{
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-direction: column;
+		height: 100%;
+		max-height: 1000px;
+	}
+
+	.heading{
+		font-size: 40px;
+		position: relative;
+  	text-align: center;
+		font-family: 'Dongle', sans-serif;
+	}
+</style>
+<body>
+	<div class="playground">
+		<div class="heading">Memorizing Game</div>
+		<!-- Tabelle mit allen Spielkarten -->
+		<table>
+			<tr>
+				<td><img src="img/tile1_D.gif"></td>
+				<td><img src="img/tile1_D.gif"></td>
+				<td><img src="img/tile1_D.gif"></td>
+				<td><img src="img/tile1_D.gif"></td>
+				<td><img src="img/tile1_D.gif"></td>
+				<td><img src="img/tile1_D.gif"></td>
+			</tr>
+			<tr>
+				<td><img src="img/tile1_D.gif"></td>
+				<td><img src="img/tile1_D.gif"></td>
+				<td><img src="img/tile1_D.gif"></td>
+				<td><img src="img/tile1_D.gif"></td>
+				<td><img src="img/tile1_D.gif"></td>
+				<td><img src="img/tile1_D.gif"></td>
+			</tr>
+			<tr>
+				<td><img src="img/tile1_D.gif"></td>
+				<td><img src="img/tile1_D.gif"></td>
+				<td><img src="img/tile1_D.gif"></td>
+				<td><img src="img/tile1_D.gif"></td>
+				<td><img src="img/tile1_D.gif"></td>
+				<td><img src="img/tile1_D.gif"></td>
+			</tr>
+			<tr>
+				<td><img src="img/tile1_D.gif"></td>
+				<td><img src="img/tile1_D.gif"></td>
+				<td><img src="img/tile1_D.gif"></td>
+				<td><img src="img/tile1_D.gif"></td>
+				<td><img src="img/tile1_D.gif"></td>
+				<td><img src="img/tile1_D.gif"></td>
+			</tr>
+		</table>
+	</div>
+
+<script>
+let deckblatt = [];
+let karten = [1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12];
+let kartennummer = 1;
+let karte1pos = -1;
+let clickable = true;
+
+/* 	Die Funktion prüft nach jedem Entfernen von Karten, 
+		ob sich auf dem Spielfeld noch Karten befinden.*/
+function check_win(){
+	let youWon = false;
+	for (let i=0; i<24; i++){
+		if (document.images[i].src.search(/tile0_0.gif$/) == -1){
+			youWon = false;
+			break;
+		}
+		else{
+			youWon = true;
+			continue;
+		}
+	}
+	return youWon;
+}
+
+// Generiert Zufallszahlen
+function rand (min, max) {
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Mischt das Spielkarten Array
+function shuffle(array) {
+	for(let i=0; i<array.length*3; i++) {
+		let zufall1 = rand(0,array.length-1);
+		let zufall2 = rand(0,array.length-1);
+		let temp = array[zufall1];
+		array[zufall1] = array[zufall2];
+		array[zufall2] = temp;
+	}
+	return array;
+}
+
+/* Entfernt die zwei ausgewählten Karten und
+	 ruft die check_win() Funktion auf */
+function karten_entfernen(pos1, pos2){
+	document.images[pos1].src = "img/tile0_0.gif";
+	document.images[pos2].src = "img/tile0_0.gif";
+	document.images[pos1].removeEventListener("click", karten_klick);
+	document.images[pos2].removeEventListener("click", karten_klick);
+	clickable = true;
+
+	if (check_win()){
+		alert("You won!");
+	}
+
+}
+
+// Deckt die Karten an den übergebenen Positionen wieder zu
+function karten_zudecken(pos1, pos2){
+	document.images[pos1].src = "img/tile" + deckblatt[pos1] + "_D.gif";
+	document.images[pos2].src = "img/tile" + deckblatt[pos2] + "_D.gif";
+	document.images[pos1].addEventListener("click", karten_klick);
+	document.images[pos2].addEventListener("click", karten_klick);
+	clickable = true;
+}
+
+// Deckt die Karte auf
+function karte_aufdecken(i){
+	document.images[i].src = "img/tile" + deckblatt[i] + "_" + karten[i] + ".gif";
+	document.images[i].removeEventListener("click", karten_klick);
+			if (kartennummer == 1){
+				kartennummer++;
+				karte1pos = i;
+			}
+			else{
+				clickable = false;
+				kartennummer = 1;
+				if (karten[i] == karten[karte1pos]){
+					setTimeout(karten_entfernen, 1500,karte1pos, i);
+				}
+				else{
+					setTimeout(karten_zudecken,1500, karte1pos,i);
+				}
+			}
+}
+
+// Kartenklick Handler
+function karten_klick(){
+	for(let i=0; i<24; i++){
+		if (clickable && document.images[i]== this){
+			karte_aufdecken(i);
+			break;
+		}
+	}
+	
+}
+
+
+addEventListener('load',function(){
+	// Mischt die Karten auf dem Spielfeld vor Spielstart
+	karten = shuffle(karten);
+	for(let i=0; i<24; i++) {
+		// Erzeugt Zufallszahlen für die Drehung der Karten
+		let zufall = rand(0,2);
+		deckblatt.push(zufall);
+		document.images[i].src = "img/tile" + zufall + "_D.gif";
+	}
+	// Fügt jeder Karte einen EventListener hinzu
+	for(let i=0; i<24; i++) {
+		document.images[i].addEventListener('click',karten_klick);
+	}
+});
+</script>
+</body>
+</html>
